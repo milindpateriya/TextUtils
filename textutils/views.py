@@ -17,6 +17,7 @@ def analyze(request):
     newlineremover = request.POST.get('newlineremover', 'off')
     extraspaceremover = request.POST.get('extraspaceremover', 'off')
     numberremover = request.POST.get('numberremover','off')
+    lowercase = request.POST.get('lowercase','off')
 
     #Check which checkbox is on
     if removepunc == "on":
@@ -69,9 +70,16 @@ def analyze(request):
         
         params = {'purpose': 'Removed NewLines', 'analyzed_text': analyzed}
         djtext = analyzed
-
     
-    if(removepunc != "on" and newlineremover!="on" and extraspaceremover!="on" and fullcaps!="on" and numberremover != "on"):
+    if(lowercase=="on"):
+        analyzed = ""
+        for char in djtext:
+            analyzed = analyzed + char.lower()
+
+        params = {'purpose': 'Changed to Uppercase', 'analyzed_text': analyzed}
+        djtext = analyzed
+    
+    if(removepunc != "on" and newlineremover!="on" and extraspaceremover!="on" and fullcaps!="on" and numberremover != "on" and lowercase != "on"):
         return HttpResponse("please select any operation and try again")
 
     return render(request, 'analyze.html', params)
